@@ -33,7 +33,7 @@ public class PlayerIfThenElse implements Player {
     public PlayerIfThenElse(UUID gameId, String playerId) {
         this.gameId = gameId;
         this.playerId = playerId;
-        connect4Client = new Connect4Client();
+        connect4Client = new Connect4Client("https://connect-four-challenge.herokuapp.com/api/v1/players");
         gson = new Gson();
     }
 

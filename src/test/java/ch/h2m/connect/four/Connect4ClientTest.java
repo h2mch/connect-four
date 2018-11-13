@@ -11,7 +11,8 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class Connect4ClientTest {
 
@@ -21,7 +22,7 @@ class Connect4ClientTest {
 
     @BeforeEach
     void setUp() {
-        connect4Client = new Connect4Client();
+        connect4Client = new Connect4Client(null);
     }
 
     @Test

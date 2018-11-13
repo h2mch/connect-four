@@ -17,14 +17,50 @@ import java.util.UUID;
 
 public class Connect4Client {
 
+    private final String URL;
     private final HttpClient httpClient;
     private final JsonParser parser;
 
     private static Logger logger = LoggerFactory.getLogger(Connect4Client.class);
 
-    public Connect4Client() {
+    public Connect4Client(String uRL) {
         httpClient = HttpClient.newBuilder().build();
         parser = new JsonParser();
+        this.URL = uRL; // uRL == null || uRL.isEmpty()) ? "http://localhost:8080/api/v1/players" : uRL;
+    }
+
+    public JsonObject dropDisc(UUID gameUuid, String playerId, int row) throws IOException, InterruptedException {
+        logger.debug("Drop disc for game '{}' on row '{}'.", gameUuid, row);
+
+        JsonObject player = new JsonObject();
+        player.addProperty("playerId", playerId);
+        player.addProperty("column", row);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(URL + "/games/" + gameUuid.toString()))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(player.toString()))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        String body = response.body();
+        logger.debug("Response received with status '{}'\nbody:\n{}", response.statusCode(), body);
+        return parser.parse(body).getAsJsonObject();
+    }
+
+    public JsonObject getGameState(UUID gameUuid) throws IOException, InterruptedException {
+        logger.debug("Get gamestate for game '{}'", gameUuid.toString());
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(URL + "/games/" + gameUuid.toString()))
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        String body = response.body();
+        logger.debug("Response received with status '{}'\nbody:\n{}", response.statusCode(), body);
+        return parser.parse(body).getAsJsonObject();
     }
 
     public Optional<UUID> join(String playerId) throws IOException, InterruptedException {
@@ -35,7 +71,7 @@ public class Connect4Client {
         String playerString = player.toString();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/v1/players/join"))
+                .uri(URI.create(URL + "/join"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(playerString))
                 .build();
@@ -47,40 +83,6 @@ public class Connect4Client {
         return (game.has("gameId"))
                 ? Optional.of(UUID.fromString(game.get("gameId").getAsString()))
                 : Optional.empty();
-    }
-
-    public JsonObject getGameState(UUID gameUuid) throws IOException, InterruptedException {
-        logger.debug("Get gamestate for game '{}'", gameUuid.toString());
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/v1/players/games/" + gameUuid.toString()))
-                .header("Content-Type", "application/json")
-                .GET()
-                .build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        String body = response.body();
-        logger.debug("Response received with status '{}'\nbody:\n{}", response.statusCode(), body);
-        return parser.parse(body).getAsJsonObject();
-    }
-
-    public JsonObject dropDisc(UUID gameUuid, String playerId, int row) throws IOException, InterruptedException {
-        logger.debug("Drop disc for game '{}' on row '{}'.", gameUuid, row);
-
-        JsonObject player = new JsonObject();
-        player.addProperty("playerId", playerId);
-        player.addProperty("column", row);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/v1/players/games/"+gameUuid.toString()))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(player.toString()))
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        String body = response.body();
-        logger.debug("Response received with status '{}'\nbody:\n{}", response.statusCode(), body);
-        return parser.parse(body).getAsJsonObject();
     }
 
 
