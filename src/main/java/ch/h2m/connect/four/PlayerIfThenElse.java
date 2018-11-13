@@ -45,59 +45,7 @@ public class PlayerIfThenElse implements Player {
         return playerId;
     }
 
-    @Override
-    public void run() {
-        try {
-            JsonObject game = connect4Client.getGameState(gameId);
-            JsonArray players = game.get("players").getAsJsonArray();
-            Disc myDisc = getDiscColor(players);
-
-            logger.info("Start Game for {} ({})", playerId, myDisc);
-            while (!game.get("finished").getAsBoolean()) {
-                if (playerId.equals(game.get("currentPlayerId").getAsString())) {
-
-                    List<List<Disc>> typedBoard = gson.fromJson(game.getAsJsonArray("board"), new TypeToken<ArrayList<ArrayList<Disc>>>() {
-                    }.getType());
-
-
-                    List<Result> scores = new ArrayList<>();
-                    Collection<Result> singleScores;
-
-                    singleScores = new ScoreVertical(typedBoard).calculate();
-                    scores.addAll(singleScores);
-                    logger.debug("Vertical: {}", singleScores);
-
-                    singleScores = new ScoreHorizontal(typedBoard).calculate();
-                    scores.addAll(singleScores);
-                    logger.debug("Horizontal: {}", singleScores);
-
-                    singleScores = new ScoreDiagnonalBackward(typedBoard).calculate();
-                    scores.addAll(singleScores);
-                    logger.debug("Diagonal backward: {}", singleScores);
-
-                    singleScores = new ScoreDiagnonalForward(typedBoard).calculate();
-                    scores.addAll(singleScores);
-                    logger.debug("Diagonal forward: {}", singleScores);
-
-                    int nextDisc = chooseColumn(scores, myDisc);
-
-
-                    connect4Client.dropDisc(gameId, playerId, nextDisc);
-                } else {
-
-                    Thread.sleep(100);
-                }
-                game = connect4Client.getGameState(gameId);
-            }
-            logger.info("Game finished. winner '{}'", game.get("winner").getAsString());
-
-        } catch (Exception ex) {
-            logger.error("upps", ex);
-        }
-    }
-
-
-    private int chooseColumn(List<Result> decisionBase, Disc myColor) {
+    private int chooseColumn(List<Result> decisionBase, Disc myColor, Disc opposite) {
 
         List<Result> myMaxScores = new ArrayList<>();
         List<Result> otherMaxScores = new ArrayList<>();
@@ -117,6 +65,10 @@ public class PlayerIfThenElse implements Player {
             } else {
                 otherMaxScore = getMaxScore(otherMaxScores, otherMaxScore, result);
             }
+        }
+
+        if (otherMaxScore == 3 && myColor == opposite) {
+            return -1;
         }
 
         Random random = new Random();
@@ -139,6 +91,92 @@ public class PlayerIfThenElse implements Player {
         }
         int randomColumn = random.nextInt(7);
         return randomColumn;
+    }
+
+    @Override
+    public void run() {
+        try {
+            JsonObject game = connect4Client.getGameState(gameId);
+            JsonArray players = game.get("players").getAsJsonArray();
+            Disc myDisc = getDiscColor(players);
+
+            logger.info("Start Game for {} ({})", playerId, myDisc);
+            while (!game.get("finished").getAsBoolean()) {
+                if (playerId.equals(game.get("currentPlayerId").getAsString())) {
+
+                    List<List<Disc>> typedBoard = gson.fromJson(game.getAsJsonArray("board"), new TypeToken<ArrayList<ArrayList<Disc>>>() {
+                    }.getType());
+
+
+                    List<Result> scores = new ArrayList<>();
+                    Collection<Result> singleScores;
+
+                    ScoreVertical scoreVertical = new ScoreVertical(typedBoard);
+                    singleScores = scoreVertical.calculate();
+                    scores.addAll(singleScores);
+                    logger.debug("Vertical: {}", singleScores);
+
+                    ScoreHorizontal scoreHorizontal = new ScoreHorizontal(typedBoard);
+                    singleScores = scoreHorizontal.calculate();
+                    scores.addAll(singleScores);
+                    logger.debug("Horizontal: {}", singleScores);
+
+                    ScoreDiagnonalBackward scoreDiagnonalBackward = new ScoreDiagnonalBackward(typedBoard);
+                    singleScores = scoreDiagnonalBackward.calculate();
+                    scores.addAll(singleScores);
+                    logger.debug("Diagonal backward: {}", singleScores);
+
+                    ScoreDiagnonalForward scoreDiagnonalForward = new ScoreDiagnonalForward(typedBoard);
+                    singleScores = scoreDiagnonalForward.calculate();
+                    scores.addAll(singleScores);
+                    logger.debug("Diagonal forward: {}", singleScores);
+
+                    int nextDisc = chooseColumn(scores, myDisc, myDisc.opposite());
+
+                    // Test result start
+//                    /*
+
+                    int row = 0;
+                    for (List<Disc> discs : typedBoard) {
+                        Disc disc = discs.get(nextDisc);
+                        if (disc == Disc.EMPTY) {
+                            row++;
+                        }
+                    }
+                    typedBoard.get(row).set(nextDisc, myDisc);
+
+                    List<Result> nextScores = new ArrayList<>();
+                    nextScores.addAll(scoreHorizontal.calculate());
+                    nextScores.addAll(scoreDiagnonalForward.calculate());
+                    nextScores.addAll(scoreDiagnonalBackward.calculate());
+                    if (chooseColumn(scores, myDisc.opposite(), myDisc.opposite()) == -1) {
+
+                        List<Result> truncatedScores = new ArrayList<>(scores);
+                        for (Result score : scores) {
+                            if (score.column == nextDisc) {
+                                truncatedScores.remove(score);
+                            }
+                        }
+                        nextDisc = chooseColumn(truncatedScores, myDisc, myDisc.opposite());
+                    }
+
+
+//*/
+                    // Test result end
+
+
+                    connect4Client.dropDisc(gameId, playerId, nextDisc);
+                } else {
+
+                    Thread.sleep(100);
+                }
+                game = connect4Client.getGameState(gameId);
+            }
+            logger.info("Game finished. winner '{}'", game.get("winner").getAsString());
+
+        } catch (Exception ex) {
+            logger.error("upps", ex);
+        }
     }
 
     private int getMaxScore(List<Result> scores, int maxScore, Result result) {

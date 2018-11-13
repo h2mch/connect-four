@@ -13,4 +13,14 @@ public enum Disc {
         return !isEmpty();
     }
 
+    public Disc opposite() {
+
+        switch (this) {
+            case RED:
+                return YELLOW;
+            case YELLOW:
+                return RED;
+        }
+        return EMPTY;
+    }
 }
