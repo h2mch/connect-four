@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -35,52 +37,6 @@ public class PlayerIfThenElse implements Player {
         this.playerId = playerId;
         connect4Client = new Connect4Client();
         gson = new Gson();
-    }
-
-    private int chooseColumn(List<Result> decisionBase, Disc myColor) {
-
-        List<Result> myMaxScores = new ArrayList<>();
-        List<Result> otherMaxScores = new ArrayList<>();
-
-        int myMaxScore = 0;
-        int otherMaxScore = 0;
-
-        for (Result result : decisionBase) {
-            if (result.color == myColor) {
-                if (myMaxScores.isEmpty()) {
-                    myMaxScores.add(result);
-                    myMaxScore = result.score;
-                } else if (myMaxScores.get(0).score == result.score) {
-                    myMaxScores.add(result);
-                } else if (myMaxScores.get(0).score < result.score) {
-                    myMaxScores.clear();
-                    myMaxScores.add(result);
-                    myMaxScore = result.score;
-                }
-            } else {
-                if (otherMaxScores.isEmpty()) {
-                    otherMaxScores.add(result);
-                    otherMaxScore = result.score;
-                } else if (otherMaxScores.get(0).score == result.score) {
-                    otherMaxScores.add(result);
-                } else if (otherMaxScores.get(0).score < result.score) {
-                    otherMaxScores.clear();
-                    otherMaxScores.add(result);
-                    otherMaxScore = result.score;
-                }
-            }
-        }
-
-        Random random = new Random();
-        if (otherMaxScore > myMaxScore) {
-            Result result = otherMaxScores.get(random.nextInt(otherMaxScores.size()));
-            return result.column;
-        } else if (!myMaxScores.isEmpty()) {
-            Result result = myMaxScores.get(random.nextInt(myMaxScores.size()));
-            return result.column;
-        }
-        int randomColumn = random.nextInt(7);
-        return randomColumn;
     }
 
     @Override
@@ -136,6 +92,65 @@ public class PlayerIfThenElse implements Player {
         } catch (Exception ex) {
             logger.error("upps", ex);
         }
+    }
+
+
+    private int chooseColumn(List<Result> decisionBase, Disc myColor) {
+
+        List<Result> myMaxScores = new ArrayList<>();
+        List<Result> otherMaxScores = new ArrayList<>();
+
+        Map<Integer, Integer> columnScoreSum = new HashMap<>();
+        int myMaxScore = 0;
+        int otherMaxScore = 0;
+
+        for (Result result : decisionBase) {
+            if (result.color == myColor) {
+                myMaxScore = getMaxScore(myMaxScores, myMaxScore, result);
+                Integer sum = columnScoreSum.get(result.column);
+                if (sum == null) {
+                    sum = 0;
+                }
+                columnScoreSum.put(result.column, sum + myMaxScore);
+            } else {
+                otherMaxScore = getMaxScore(otherMaxScores, otherMaxScore, result);
+            }
+        }
+
+        Random random = new Random();
+        if (otherMaxScore > myMaxScore) {
+            Result result = otherMaxScores.get(random.nextInt(otherMaxScores.size()));
+            return result.column;
+        } else if (!myMaxScores.isEmpty()) {
+
+            int maxTotalScoreColumn = 0;
+            int maxTotalScore = 0;
+            for (Result maxScore : myMaxScores) {
+                int currentTotal = columnScoreSum.get(maxScore.column);
+                if (currentTotal > maxTotalScore) {
+                    maxTotalScoreColumn = maxScore.column;
+                    maxTotalScore = currentTotal;
+                }
+            }
+
+            return maxTotalScoreColumn;
+        }
+        int randomColumn = random.nextInt(7);
+        return randomColumn;
+    }
+
+    private int getMaxScore(List<Result> scores, int maxScore, Result result) {
+        if (scores.isEmpty()) {
+            scores.add(result);
+            maxScore = result.score;
+        } else if (scores.get(0).score == result.score) {
+            scores.add(result);
+        } else if (scores.get(0).score < result.score) {
+            scores.clear();
+            scores.add(result);
+            maxScore = result.score;
+        }
+        return maxScore;
     }
 
 

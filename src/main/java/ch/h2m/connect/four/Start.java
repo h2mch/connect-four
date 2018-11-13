@@ -23,25 +23,26 @@ public class Start {
         String namePlayerOne = "heinz";
         String namePlayerTwo = "anna";
 
-        for (int i = 0; i < 100; i++) {
-            Optional<UUID> gameForPlayerOne = connect4Client.join(namePlayerOne);
+        for (int i = 0; i < 10; i++) {
+            //Optional<UUID> gameForPlayerOne = connect4Client.join(namePlayerOne);
             Optional<UUID> gameForPlayerTwo = connect4Client.join(namePlayerTwo);
 
-            while (gameForPlayerOne.isEmpty()) {
+/*            while (gameForPlayerOne.isEmpty()) {
                 gameForPlayerOne = connect4Client.join(namePlayerOne);
                 Thread.sleep(200);
             }
-
+*/
             while (gameForPlayerTwo.isEmpty()) {
                 gameForPlayerTwo = connect4Client.join(namePlayerTwo);
                 Thread.sleep(200);
             }
 
             ExecutorService executor = Executors.newFixedThreadPool(2);
-            Future<?> resultOne = executor.submit(new PlayerRandom(gameForPlayerOne.get(), namePlayerOne));
+//            Future<?> resultOne = executor.submit(new PlayerRandom(gameForPlayerOne.get(), namePlayerOne));
             Future<?> resultTwo = executor.submit(new PlayerIfThenElse(gameForPlayerTwo.get(), namePlayerTwo));
 
-            while (!resultOne.isDone() && !resultTwo.isDone()) {
+            while (!resultTwo.isDone()) {
+//            while (!resultOne.isDone() && !resultTwo.isDone()) {
                 Thread.sleep(1000);
             }
             executor.shutdown();
