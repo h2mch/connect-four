@@ -13,8 +13,6 @@ import java.util.List;
 
 import ch.h2m.connect.four.model.Disc;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
 public class JsonParserTest {
 
     private String game = "{\n" +
@@ -53,7 +51,7 @@ public class JsonParserTest {
 
         List<List<Disc>> typedBoard = gson.fromJson(json.getAsJsonArray("board"), new TypeToken<ArrayList<ArrayList<Disc>>>() {
         }.getType());
-
+/*
         int[] score = new ScoreVertical(typedBoard).calculate(Disc.RED);
         System.out.println("Vertical");
         for (int v : score) {
@@ -66,7 +64,7 @@ public class JsonParserTest {
         for (int v : score) {
             System.out.println(v);
         }
-
+*/
 
         //checkDiagonalSlash(typedBoard);
         //checkDiagonalBackSlash(typedBoard);

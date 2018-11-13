@@ -1,47 +1,38 @@
 package ch.h2m.connect.four;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ch.h2m.connect.four.model.Disc;
+import ch.h2m.connect.four.model.Result;
 
 public class ScoreVertical extends ScoreStrategy {
-
 
     public ScoreVertical(List<List<Disc>> typedBoard) {
         super(typedBoard);
     }
 
     @Override
-    public int[] calculate(Disc myDisc) {
-        int width = typedBoard.get(0).size();
+    public List<Result> calculate() {
+        List<Result> decisionBase = new ArrayList<>();
         int height = typedBoard.size();
-        int[] scores = new int[width];
+        int width = typedBoard.get(0).size();
 
-        for (int i = 0; i < width; i++) {
+        for (int column = 0; column < width; column++) {
+            Disc disc, lastDisc = null;
             int score = 0;
-            Disc lastDisc = null;
-            for (int j = height - 1; j >= 0; j--) {
-                Disc disc = typedBoard.get(j).get(i);
 
-                if (Disc.EMPTY == disc) {
-                    break;
-                }
-                if (lastDisc == null) {
-                    lastDisc = disc;
-                }
+            for (int row = height - 1; row >= 0; row--) {
+                disc = typedBoard.get(row).get(column);
+                score = setScore(disc, lastDisc, score);
 
-                if (lastDisc == disc) {
-                    score += 1;
-                } else {
-                    score = 1;
+                if ((score > 0) && (row > 0) && isNextDiscInColumn(row - 1, column)) {
+                    decisionBase.add(new Result(column, score, disc));
                 }
                 lastDisc = disc;
             }
-            //positve if match for my color, negative if for opponent
-            scores[i] = (lastDisc == myDisc) ? scores[i] = score : 0 - score;
         }
-
-        return scores;
+        return decisionBase;
     }
 
 }

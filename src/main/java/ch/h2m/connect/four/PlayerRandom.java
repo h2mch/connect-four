@@ -2,7 +2,6 @@ package ch.h2m.connect.four;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -25,6 +24,7 @@ public class PlayerRandom implements Player {
     private final String playerId;
     private final Connect4Client connect4Client;
     private final Gson gson;
+    private final Random rand;
 
     private static Logger logger = LoggerFactory.getLogger(Start.class);
 
@@ -34,6 +34,7 @@ public class PlayerRandom implements Player {
         this.playerId = playerId;
         connect4Client = new Connect4Client();
         gson = new Gson();
+        rand = new Random();
     }
 
     @Override
@@ -50,7 +51,6 @@ public class PlayerRandom implements Player {
             logger.info("Start Game for {} ({})", playerId, myDisc);
             while (!game.get("finished").getAsBoolean()) {
                 if (playerId.equals(game.get("currentPlayerId").getAsString())) {
-                //    connect4Client.dropDisc(gameId, playerId, new Random().nextInt(4));
 
                     List<List<Disc>> typedBoard = gson.fromJson(game.getAsJsonArray("board"), new TypeToken<ArrayList<ArrayList<Disc>>>() {
                     }.getType());
@@ -69,17 +69,17 @@ public class PlayerRandom implements Player {
                                 .collect(Collectors.toList());
                     }
 
-                    Random rand = new Random();
                     int nextMove = validMoves.get(rand.nextInt(validMoves.size()));
 
                     connect4Client.dropDisc(gameId, playerId, nextMove);
                 } else {
-                    Thread.sleep(500);
+                    Thread.sleep(100);
                 }
                 game = connect4Client.getGameState(gameId);
 
             }
-            logger.info("Game finished. winner '{}'", game.get("winner").toString());
+            logger.info("Game finished. winner '{}'", game.get("winner").getAsString());
+
         } catch (Exception ex) {
             logger.error("upps", ex);
         }

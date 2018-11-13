@@ -27,7 +27,7 @@ public class Start {
         String namePlayerOne = "Random";
         String namePlayerTwo = "Basic";
 
-        for (int i = 0; i < 40; i++) {
+        for (int i = 0; i < 200; i++) {
             Optional<UUID> gameForPlayerOne = connect4Client.join(namePlayerOne);
             Optional<UUID> gameForPlayerTwo = connect4Client.join(namePlayerTwo);
 
@@ -44,15 +44,13 @@ public class Start {
             }
 
             ExecutorService executor = Executors.newFixedThreadPool(2);
-            //Future<?> resultOne = executor.submit(new PlayerRandom(gameForPlayerOne.get(), namePlayerOne));
-            Future<?> resultOne = executor.submit(new PlayerBasic(gameForPlayerOne.get(), namePlayerOne));
-            Future<?> resultTwo = executor.submit(new PlayerExtended(gameForPlayerTwo.get(), namePlayerTwo));
+            Future<?> resultOne = executor.submit(new PlayerRandom(gameForPlayerOne.get(), "Random"));
+            Future<?> resultTwo = executor.submit(new PlayerIfThenElse(gameForPlayerTwo.get(), "IfThenElse"));
 
             while (!resultOne.isDone() && !resultTwo.isDone()) {
                 Thread.sleep(1000);
             }
             executor.shutdown();
-            logger.info("End gameForPlayerTwo {}", i);
         }
 
     }
