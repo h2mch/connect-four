@@ -18,7 +18,7 @@ import java.util.UUID;
 public class Connect4Client {
 
     private final String URL = "https://connect-four-challenge.herokuapp.com/api/v1/players";
-    //    private final String URL = "http://localhost:8080/api/v1/players";
+    //        private final String URL = "http://localhost:8080/api/v1/players";
     private final HttpClient httpClient;
     private final JsonParser parser;
 

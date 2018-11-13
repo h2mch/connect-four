@@ -3,6 +3,7 @@ package ch.h2m.connect.four;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +30,7 @@ public class DiagonalForwardlTest {
     void calculate() {
         scoreDiagonalForward = new ScoreDiagnonalForward(board);
 
-        List<Result> scores = scoreDiagonalForward.calculate();
+        List<Result> scores = new ArrayList<>(scoreDiagonalForward.calculate());
         Collections.sort(scores);
 
 

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,7 @@ public class PlayerIfThenElse implements Player {
 
 
                     List<Result> scores = new ArrayList<>();
-                    List<Result> singleScores;
+                    Collection<Result> singleScores;
 
                     singleScores = new ScoreVertical(typedBoard).calculate();
                     scores.addAll(singleScores);
@@ -79,6 +80,7 @@ public class PlayerIfThenElse implements Player {
                     logger.debug("Diagonal forward: {}", singleScores);
 
                     int nextDisc = chooseColumn(scores, myDisc);
+
 
                     connect4Client.dropDisc(gameId, playerId, nextDisc);
                 } else {

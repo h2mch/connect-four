@@ -4,7 +4,7 @@ package ch.h2m.connect.four;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 
 import ch.h2m.connect.four.model.Disc;
@@ -29,8 +29,8 @@ public class DiagonalBackwardTest {
     void calculate() {
         scoreDiagnonalBackward = new ScoreDiagnonalBackward(board);
 
-        List<Result> scores = scoreDiagnonalBackward.calculate();
-        Collections.sort(scores);
+        Collection<Result> scores = scoreDiagnonalBackward.calculate();
+//        Collections.sort(scores);
 
 
     }

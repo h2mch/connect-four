@@ -1,7 +1,9 @@
 package ch.h2m.connect.four.score;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ch.h2m.connect.four.model.Disc;
 import ch.h2m.connect.four.model.Result;
@@ -13,8 +15,8 @@ public class ScoreDiagnonalForward extends ScoreStrategy {
     }
 
     @Override
-    public List<Result> calculate() {
-        List<Result> decisionBase = new ArrayList<>();
+    public Collection<Result> calculate() {
+        Set<Result> decisionBase = new HashSet<>();
 
         Disc disc, lastDisc = null;
         int row;
@@ -35,27 +37,27 @@ public class ScoreDiagnonalForward extends ScoreStrategy {
                 if (score == 3 * DISC_QUANTIFIER) {
                     // check upper right
                     if ((row > 0) && (column < width - 1) && isNextDiscInColumn(row - 1, column + 1)) {
-                        decisionBase.add(new Result(column + 1, 3 * DISC_QUANTIFIER, disc));
+                        decisionBase.add(new Result(ScoreDiagnonalForward.class, column + 1, 3 * DISC_QUANTIFIER, disc));
                     }
                     // check lower left
                     if ((row < height - 3) && (column > 2) && isNextDiscInColumn(row + 3, column - 3)) {
-                        decisionBase.add(new Result(column - 3, 3 * DISC_QUANTIFIER, disc));
+                        decisionBase.add(new Result(ScoreDiagnonalForward.class, column - 3, 3 * DISC_QUANTIFIER, disc));
                     }
                     score = 0;
                 }
                 if (score > 0) {
                     //check upper right
                     if ((row > 2) && (column < width - 2) && isNextDiscInColumn(row - 1, column + 1)) {
-                        decisionBase.add(new Result(column + 1, score, disc));
+                        decisionBase.add(new Result(ScoreDiagnonalForward.class, column + 1, score, disc));
                         if (typedBoard.get(row - 2).get(column + 2) == disc) {
-                            decisionBase.add(new Result(column + 1, score + DISC_QUANTIFIER, disc));
+                            decisionBase.add(new Result(ScoreDiagnonalForward.class, column + 1, score + DISC_QUANTIFIER, disc));
                         }
                     }
                     //check lower left
                     if ((row < height - 3) && (column > 2) && isNextDiscInColumn(row + 3, column - 3)) {
-                        decisionBase.add(new Result(column - 2, score, disc));
+                        decisionBase.add(new Result(ScoreDiagnonalForward.class, column - 2, score, disc));
                         if (typedBoard.get(row + 3).get(column - 3) == disc) {
-                            decisionBase.add(new Result(column - 2, score + DISC_QUANTIFIER, disc));
+                            decisionBase.add(new Result(ScoreDiagnonalForward.class, column - 2, score + DISC_QUANTIFIER, disc));
                         }
                     }
                 }

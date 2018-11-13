@@ -20,18 +20,18 @@ public class Start {
 
         Connect4Client connect4Client = new Connect4Client();
 
-        String namePlayerOne = "heinz";
+//        String namePlayerOne = "heinz";
         String namePlayerTwo = "anna";
 
         for (int i = 0; i < 10; i++) {
-            //Optional<UUID> gameForPlayerOne = connect4Client.join(namePlayerOne);
+//            Optional<UUID> gameForPlayerOne = connect4Client.join(namePlayerOne);
             Optional<UUID> gameForPlayerTwo = connect4Client.join(namePlayerTwo);
 
-/*            while (gameForPlayerOne.isEmpty()) {
-                gameForPlayerOne = connect4Client.join(namePlayerOne);
-                Thread.sleep(200);
-            }
-*/
+//            while (gameForPlayerOne.isEmpty()) {
+//                gameForPlayerOne = connect4Client.join(namePlayerOne);
+//                Thread.sleep(200);
+//            }
+
             while (gameForPlayerTwo.isEmpty()) {
                 gameForPlayerTwo = connect4Client.join(namePlayerTwo);
                 Thread.sleep(200);

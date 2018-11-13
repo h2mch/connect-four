@@ -6,8 +6,11 @@ public class Result implements Comparable<Result> {
     public int column;
     public int score;
     public Disc color;
+    public Class strategy;
 
-    public Result(int column, int score, Disc disc) {
+
+    public Result(Class strategy, int column, int score, Disc disc) {
+        this.strategy = strategy;
         this.column = column;
         this.score = score;
         this.color = disc;
@@ -19,8 +22,12 @@ public class Result implements Comparable<Result> {
     }
 
     @Override
-    public String toString() {
-        return column + ":" + color + ": " + score;
+    public boolean equals(Object obj) {
+        return this.toString().equals(obj.toString());
     }
 
+    @Override
+    public String toString() {
+        return strategy.getName() + ":" + column + ":" + color + ":" + score;
+    }
 }

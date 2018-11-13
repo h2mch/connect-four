@@ -3,6 +3,7 @@ package ch.h2m.connect.four;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +33,7 @@ public class HorizontalTest {
     void calculate() {
         scoreHorizontal = new ScoreHorizontal(board);
 
-        List<Result> scores = scoreHorizontal.calculate();
+        List<Result> scores = new ArrayList<>(scoreHorizontal.calculate());
         Collections.sort(scores);
 
         assertEquals(0, scores.get(0).column);

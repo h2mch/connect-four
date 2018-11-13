@@ -27,7 +27,7 @@ public class ScoreVertical extends ScoreStrategy {
                 score = setScore(disc, lastDisc, score);
 
                 if ((score > 0) && (row > 0) && isNextDiscInColumn(row - 1, column)) {
-                    decisionBase.add(new Result(column, score, disc));
+                    decisionBase.add(new Result(ScoreVertical.class, column, score, disc));
                 }
                 lastDisc = disc;
             }

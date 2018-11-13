@@ -3,6 +3,7 @@ package ch.h2m.connect.four.score;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 
 import ch.h2m.connect.four.model.Disc;
@@ -24,7 +25,7 @@ public abstract class ScoreStrategy {
         this.width = typedBoard.get(0).size();
     }
 
-    public abstract List<Result> calculate();
+    public abstract Collection<Result> calculate();
 
     protected boolean isNextDiscInColumn(int row, int column) {
         try {
