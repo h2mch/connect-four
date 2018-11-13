@@ -9,6 +9,7 @@ import java.util.List;
 
 import ch.h2m.connect.four.model.Disc;
 import ch.h2m.connect.four.model.Result;
+import ch.h2m.connect.four.score.ScoreDiagnonalBackward;
 
 
 public class DiagonalBackwardTest {

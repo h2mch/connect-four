@@ -1,4 +1,4 @@
-package ch.h2m.connect.four;
+package ch.h2m.connect.four.score;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

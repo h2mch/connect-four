@@ -15,6 +15,10 @@ import java.util.UUID;
 
 import ch.h2m.connect.four.model.Disc;
 import ch.h2m.connect.four.model.Result;
+import ch.h2m.connect.four.score.ScoreDiagnonalBackward;
+import ch.h2m.connect.four.score.ScoreDiagnonalForward;
+import ch.h2m.connect.four.score.ScoreHorizontal;
+import ch.h2m.connect.four.score.ScoreVertical;
 
 public class PlayerIfThenElse implements Player {
 

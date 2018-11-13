@@ -8,6 +8,7 @@ import java.util.List;
 
 import ch.h2m.connect.four.model.Disc;
 import ch.h2m.connect.four.model.Result;
+import ch.h2m.connect.four.score.ScoreVertical;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -1,4 +1,4 @@
-package ch.h2m.connect.four;
+package ch.h2m.connect.four.score;
 
 import java.util.ArrayList;
 import java.util.List;
