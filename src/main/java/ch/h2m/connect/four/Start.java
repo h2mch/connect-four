@@ -18,12 +18,12 @@ public class Start {
     public static void main(String[] args) throws IOException, InterruptedException {
 
 
-        Connect4Client connect4Client = new Connect4Client("https://connect-four-challenge.herokuapp.com/api/v1/players");
+        Connect4Client connect4Client = new Connect4Client();
 
         String namePlayerOne = "heinz";
         String namePlayerTwo = "anna";
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 100; i++) {
             Optional<UUID> gameForPlayerOne = connect4Client.join(namePlayerOne);
             Optional<UUID> gameForPlayerTwo = connect4Client.join(namePlayerTwo);
 
@@ -39,7 +39,7 @@ public class Start {
 
             ExecutorService executor = Executors.newFixedThreadPool(2);
             Future<?> resultOne = executor.submit(new PlayerRandom(gameForPlayerOne.get(), namePlayerOne));
-            Future<?> resultTwo = executor.submit(new PlayerRandom(gameForPlayerTwo.get(), namePlayerTwo));
+            Future<?> resultTwo = executor.submit(new PlayerIfThenElse(gameForPlayerTwo.get(), namePlayerTwo));
 
             while (!resultOne.isDone() && !resultTwo.isDone()) {
                 Thread.sleep(1000);

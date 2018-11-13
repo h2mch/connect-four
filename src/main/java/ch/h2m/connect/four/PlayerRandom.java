@@ -32,7 +32,7 @@ public class PlayerRandom implements Player {
     public PlayerRandom(UUID gameId, String playerId) {
         this.gameId = gameId;
         this.playerId = playerId;
-        connect4Client = new Connect4Client("https://connect-four-challenge.herokuapp.com/api/v1/players");
+        connect4Client = new Connect4Client();
         gson = new Gson();
         rand = new Random();
     }

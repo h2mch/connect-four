@@ -22,7 +22,7 @@ class Connect4ClientTest {
 
     @BeforeEach
     void setUp() {
-        connect4Client = new Connect4Client(null);
+        connect4Client = new Connect4Client();
     }
 
     @Test
