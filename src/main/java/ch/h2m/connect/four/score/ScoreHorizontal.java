@@ -39,17 +39,17 @@ public class ScoreHorizontal extends ScoreStrategy {
                 }
                 if (score > 0) {
                     //check right and next
-                    if ((column < width - 2) && isNextDiscInColumn(row, column + 1)) {
+                    if ((column < width - 1) && isNextDiscInColumn(row, column + 1)) {
                         decisionBase.add(new Result(column + 1, score, disc));
-                        if (typedBoard.get(row).get(column + 2) == disc) {
+                        if ((column < width - 2) && typedBoard.get(row).get(column + 2) == disc) {
                             //Empty Disc between
                             decisionBase.add(new Result(column + 1, score + DISC_QUANTIFIER, disc));
                         }
                     }
                     //check left and next
-                    if ((column > 2) && isNextDiscInColumn(row, column - 2)) {
-                        decisionBase.add(new Result(column - 2, score, disc));
-                        if (typedBoard.get(row).get(column - 3) == disc) {
+                    if ((column > 0) && isNextDiscInColumn(row, column - 1)) {
+                        decisionBase.add(new Result(column - 1, score, disc));
+                        if ((column > 1) && typedBoard.get(row).get(column - 2) == disc) {
                             //Empty Disc between
                             decisionBase.add(new Result(column - 2, score + DISC_QUANTIFIER, disc));
                         }

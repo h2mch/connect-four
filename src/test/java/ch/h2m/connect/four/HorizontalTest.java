@@ -22,7 +22,7 @@ public class HorizontalTest {
             Arrays.asList(Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY),
             Arrays.asList(Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY),
             Arrays.asList(Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY),
-            Arrays.asList(Disc.EMPTY, Disc.YELLOW, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY)
+            Arrays.asList(Disc.EMPTY, Disc.YELLOW, Disc.EMPTY, Disc.EMPTY, Disc.EMPTY, Disc.YELLOW, Disc.EMPTY)
     );
 
 
@@ -35,9 +35,14 @@ public class HorizontalTest {
         List<Result> scores = scoreHorizontal.calculate();
         Collections.sort(scores);
 
-        //Row: 0 colum:2
         assertEquals(0, scores.get(0).column);
         assertEquals(Disc.YELLOW, scores.get(0).color);
+        assertEquals(1, scores.get(0).score);
+
+
+        assertEquals(2, scores.get(1).column);
+        assertEquals(Disc.YELLOW, scores.get(1).color);
+        assertEquals(1, scores.get(1).score);
 
 
     }
