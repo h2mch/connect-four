@@ -87,6 +87,10 @@ public class PlayerIfThenElse implements Player {
                 }
             }
 
+            if (myMaxScore == 3) {
+                return 100 + myMaxScore;
+            }
+
             return maxTotalScoreColumn;
         }
         int randomColumn = random.nextInt(7);
@@ -134,38 +138,51 @@ public class PlayerIfThenElse implements Player {
                     int nextDisc = chooseColumn(scores, myDisc, myDisc.opposite());
 
                     // Test result start
-//                    /*
 
-                    int row = 0;
-                    for (List<Disc> discs : typedBoard) {
-                        Disc disc = discs.get(nextDisc);
-                        if (disc == Disc.EMPTY) {
-                            row++;
-                        }
-                    }
-                    typedBoard.get(row).set(nextDisc, myDisc);
+                    if (nextDisc > 99) {
+                        //we will win
+                        connect4Client.dropDisc(gameId, playerId, nextDisc - 100);
 
-                    List<Result> nextScores = new ArrayList<>();
-                    nextScores.addAll(scoreHorizontal.calculate());
-                    nextScores.addAll(scoreDiagnonalForward.calculate());
-                    nextScores.addAll(scoreDiagnonalBackward.calculate());
-                    if (chooseColumn(scores, myDisc.opposite(), myDisc.opposite()) == -1) {
+                    } else {
 
-                        List<Result> truncatedScores = new ArrayList<>(scores);
-                        for (Result score : scores) {
-                            if (score.column == nextDisc) {
-                                truncatedScores.remove(score);
+                        try {
+
+                            int row = 0;
+                            for (List<Disc> discs : typedBoard) {
+                                Disc disc = discs.get(nextDisc);
+                                if (disc == Disc.EMPTY) {
+                                    row++;
+                                }
                             }
+                            typedBoard.get(row).set(nextDisc, myDisc);
+
+                            List<Result> nextScores = new ArrayList<>();
+                            nextScores.addAll(scoreHorizontal.calculate());
+                            nextScores.addAll(scoreDiagnonalForward.calculate());
+                            nextScores.addAll(scoreDiagnonalBackward.calculate());
+                            if (chooseColumn(scores, myDisc.opposite(), myDisc.opposite()) == -1) {
+
+                                List<Result> truncatedScores = new ArrayList<>(scores);
+                                for (Result score : scores) {
+                                    if (score.column == nextDisc) {
+                                        truncatedScores.remove(score);
+                                    }
+                                }
+                                nextDisc = chooseColumn(truncatedScores, myDisc, myDisc.opposite());
+                            }
+
+
+                        } catch (Exception e) {
+
                         }
-                        nextDisc = chooseColumn(truncatedScores, myDisc, myDisc.opposite());
+                        connect4Client.dropDisc(gameId, playerId, nextDisc);
+
                     }
 
 
-//*/
                     // Test result end
 
 
-                    connect4Client.dropDisc(gameId, playerId, nextDisc);
                 } else {
 
                     Thread.sleep(100);

@@ -16,7 +16,6 @@ public class ScoreDiagnonalBackward extends ScoreStrategy {
 
     @Override
     public Collection<Result> calculate() {
-//        List<Result> decisionBase = new ArrayList<>();
         Set<Result> decisionBase = new HashSet<>();
 
         Disc disc, lastDisc;
