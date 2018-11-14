@@ -22,7 +22,7 @@ class Connect4ClientTest {
 
     @BeforeEach
     void setUp() {
-        connect4Client = new Connect4Client();
+        connect4Client = new Connect4Client("http://localhost:8080/api/v1/players");
     }
 
     @Test

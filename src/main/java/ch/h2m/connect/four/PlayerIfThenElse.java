@@ -33,10 +33,10 @@ public class PlayerIfThenElse implements Player {
     private final Gson gson;
 
 
-    public PlayerIfThenElse(UUID gameId, String playerId) {
+    public PlayerIfThenElse(UUID gameId, String playerId, String url) {
         this.gameId = gameId;
         this.playerId = playerId;
-        connect4Client = new Connect4Client();
+        connect4Client = new Connect4Client(url);
         gson = new Gson();
     }
 
@@ -87,6 +87,9 @@ public class PlayerIfThenElse implements Player {
                 }
             }
 
+            // Hacky hacky. NOt enough time to refactore the result of this methode
+            // value over 99 means, that we can finish the game directly with this
+            // column number
             if (myMaxScore == 3) {
                 return 100 + myMaxScore;
             }
@@ -138,48 +141,45 @@ public class PlayerIfThenElse implements Player {
                     int nextDisc = chooseColumn(scores, myDisc, myDisc.opposite());
 
                     // Test result start
-
                     if (nextDisc > 99) {
-                        //we will win
+                        //see chooseCOlum. Value over 99 means we have a score of 3
                         connect4Client.dropDisc(gameId, playerId, nextDisc - 100);
-
                     } else {
-
+                        connect4Client.dropDisc(gameId, playerId, nextDisc);
+                    }
+                    /* not working
+                    remove column, when the "gegner" can finish the game
+                    } else {
+                        int row = -1;
+                        for (List<Disc> discs : typedBoard) {
+                            Disc disc = discs.get(nextDisc);
+                            if (disc == Disc.EMPTY) {
+                                row++;
+                            }
+                        }
                         try {
-
-                            int row = 0;
-                            for (List<Disc> discs : typedBoard) {
-                                Disc disc = discs.get(nextDisc);
-                                if (disc == Disc.EMPTY) {
-                                    row++;
-                                }
-                            }
                             typedBoard.get(row).set(nextDisc, myDisc);
+                        }catch (Exception e){
+                            logger.error("row '{}', nextDisc '{}' myDisc '{}'", row, nextDisc, myDisc);
+                        }
+                        List<Result> nextScores = new ArrayList<>();
+                        nextScores.addAll(scoreHorizontal.calculate());
+                        nextScores.addAll(scoreDiagnonalForward.calculate());
+                        nextScores.addAll(scoreDiagnonalBackward.calculate());
+                        if (chooseColumn(scores, myDisc.opposite(), myDisc.opposite()) == -1) {
 
-                            List<Result> nextScores = new ArrayList<>();
-                            nextScores.addAll(scoreHorizontal.calculate());
-                            nextScores.addAll(scoreDiagnonalForward.calculate());
-                            nextScores.addAll(scoreDiagnonalBackward.calculate());
-                            if (chooseColumn(scores, myDisc.opposite(), myDisc.opposite()) == -1) {
-
-                                List<Result> truncatedScores = new ArrayList<>(scores);
-                                for (Result score : scores) {
-                                    if (score.column == nextDisc) {
-                                        truncatedScores.remove(score);
-                                    }
+                            List<Result> truncatedScores = new ArrayList<>(scores);
+                            for (Result score : scores) {
+                                if (score.column == nextDisc) {
+                                    truncatedScores.remove(score);
                                 }
-                                nextDisc = chooseColumn(truncatedScores, myDisc, myDisc.opposite());
                             }
-
-
-                        } catch (Exception e) {
-
+                            nextDisc = chooseColumn(truncatedScores, myDisc, myDisc.opposite());
                         }
                         connect4Client.dropDisc(gameId, playerId, nextDisc);
 
                     }
-
-
+                    */
                     // Test result end
 
 

@@ -29,10 +29,10 @@ public class PlayerRandom implements Player {
     private static Logger logger = LoggerFactory.getLogger(Start.class);
 
 
-    public PlayerRandom(UUID gameId, String playerId) {
+    public PlayerRandom(UUID gameId, String playerId, String url) {
         this.gameId = gameId;
         this.playerId = playerId;
-        connect4Client = new Connect4Client();
+        connect4Client = new Connect4Client(url);
         gson = new Gson();
         rand = new Random();
     }

@@ -17,16 +17,16 @@ import java.util.UUID;
 
 public class Connect4Client {
 
-    //    private final String URL = "https://connect-four-challenge.herokuapp.com/api/v1/players";
-    private final String URL = "http://localhost:8080/api/v1/players";
+    private final String URL;
     private final HttpClient httpClient;
     private final JsonParser parser;
 
     private static Logger logger = LoggerFactory.getLogger(Connect4Client.class);
 
-    public Connect4Client() {
-        httpClient = HttpClient.newBuilder().build();
-        parser = new JsonParser();
+    public Connect4Client(String url) {
+        this.httpClient = HttpClient.newBuilder().build();
+        this.parser = new JsonParser();
+        this.URL = url;
     }
 
     public JsonObject dropDisc(UUID gameUuid, String playerId, int row) throws IOException, InterruptedException {

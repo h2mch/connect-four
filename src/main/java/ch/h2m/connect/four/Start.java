@@ -14,11 +14,14 @@ import java.util.concurrent.Future;
  */
 public class Start {
 
+    private static final String remoteUrl = "https://connect-four-challenge.herokuapp.com/api/v1/players";
+    private static final String localUrl = "http://localhost:8080/api/v1/players";
+
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-
-        Connect4Client connect4Client = new Connect4Client();
+        String url = localUrl;
+        Connect4Client connect4Client = new Connect4Client(url);
 
         String namePlayerOne = "heinz";
         String namePlayerTwo = "anna";
@@ -38,8 +41,8 @@ public class Start {
             }
 
             ExecutorService executor = Executors.newFixedThreadPool(2);
-            Future<?> resultOne = executor.submit(new PlayerRandom(gameForPlayerOne.get(), namePlayerOne));
-            Future<?> resultTwo = executor.submit(new PlayerIfThenElse(gameForPlayerTwo.get(), namePlayerTwo));
+            Future<?> resultOne = executor.submit(new PlayerRandom(gameForPlayerOne.get(), namePlayerOne, url));
+            Future<?> resultTwo = executor.submit(new PlayerIfThenElse(gameForPlayerTwo.get(), namePlayerTwo, url));
 
 //            while (!resultTwo.isDone()) {
             while (!resultOne.isDone() && !resultTwo.isDone()) {
