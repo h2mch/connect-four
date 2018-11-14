@@ -45,7 +45,7 @@ public class PlayerIfThenElse implements Player {
         return playerId;
     }
 
-    private int chooseColumn(List<Result> decisionBase, Disc myColor, Disc opposite) {
+    private int chooseColumn(List<Result> decisionBase, Disc myColor) {
 
         List<Result> myMaxScores = new ArrayList<>();
         List<Result> otherMaxScores = new ArrayList<>();
@@ -67,10 +67,6 @@ public class PlayerIfThenElse implements Player {
             }
         }
 
-        if (otherMaxScore == 3 && myColor == opposite) {
-            return -1;
-        }
-
         Random random = new Random();
         if (otherMaxScore > myMaxScore) {
             Result result = otherMaxScores.get(random.nextInt(otherMaxScores.size()));
@@ -85,13 +81,6 @@ public class PlayerIfThenElse implements Player {
                     maxTotalScoreColumn = maxScore.column;
                     maxTotalScore = currentTotal;
                 }
-            }
-
-            // Hacky hacky. NOt enough time to refactore the result of this methode
-            // value over 99 means, that we can finish the game directly with this
-            // column number
-            if (myMaxScore == 3) {
-                return 100 + myMaxScore;
             }
 
             return maxTotalScoreColumn;
@@ -138,49 +127,9 @@ public class PlayerIfThenElse implements Player {
                     scores.addAll(singleScores);
                     logger.debug("Diagonal forward: {}", singleScores);
 
-                    int nextDisc = chooseColumn(scores, myDisc, myDisc.opposite());
+                    int nextDisc = chooseColumn(scores, myDisc);
 
-                    // Test result start
-                    if (nextDisc > 99) {
-                        //see chooseCOlum. Value over 99 means we have a score of 3
-                        connect4Client.dropDisc(gameId, playerId, nextDisc - 100);
-                    } else {
-                        connect4Client.dropDisc(gameId, playerId, nextDisc);
-                    }
-                    /* not working
-                    remove column, when the "gegner" can finish the game
-                    } else {
-                        int row = -1;
-                        for (List<Disc> discs : typedBoard) {
-                            Disc disc = discs.get(nextDisc);
-                            if (disc == Disc.EMPTY) {
-                                row++;
-                            }
-                        }
-                        try {
-                            typedBoard.get(row).set(nextDisc, myDisc);
-                        }catch (Exception e){
-                            logger.error("row '{}', nextDisc '{}' myDisc '{}'", row, nextDisc, myDisc);
-                        }
-                        List<Result> nextScores = new ArrayList<>();
-                        nextScores.addAll(scoreHorizontal.calculate());
-                        nextScores.addAll(scoreDiagnonalForward.calculate());
-                        nextScores.addAll(scoreDiagnonalBackward.calculate());
-                        if (chooseColumn(scores, myDisc.opposite(), myDisc.opposite()) == -1) {
-
-                            List<Result> truncatedScores = new ArrayList<>(scores);
-                            for (Result score : scores) {
-                                if (score.column == nextDisc) {
-                                    truncatedScores.remove(score);
-                                }
-                            }
-                            nextDisc = chooseColumn(truncatedScores, myDisc, myDisc.opposite());
-                        }
-                        connect4Client.dropDisc(gameId, playerId, nextDisc);
-
-                    }
-                    */
-                    // Test result end
+                    connect4Client.dropDisc(gameId, playerId, nextDisc);
 
 
                 } else {
